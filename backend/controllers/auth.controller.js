@@ -3,7 +3,6 @@ import User from '../models/user.schema.js'
 import CustomError from '../utils/CustomError.js'
 import formidable from "formidable";
 import uploadImage from '../config/cloudinary.config.js'
-import bcrypt from 'bcrypt'
 import cookiesOptions from "../utils/CookiesOptions.js";
 
 /***************************************************
