@@ -76,9 +76,33 @@ export const addRemoveFriend = asyncHandler(async (req, res) => {
         throw new CustomError("Unauthorized User", 400)
     }
 
+    const { id, friendId } = req.params
+
+    const users = await User.findById(id)
+    const friend = await User.findById(friendId)
+
+    if(users.friends.includes(friendId)) {
+        users.friends = users.friends.filter(id => id !== friendId)
+        friend.friends = friend.friends.filter(id => id !== id)
+    } else {
+        users.friends.push(friendId)
+        friend.friends.push(id)
+    }
+
+    await users.save()
+    await friend.save()
+
+    const friends = Promise.all(
+        users.friends.map((id) => User.findById(id))
+    )
+
+    const formatted = friends.map(({ _id, firstname, lastname, picturePath, friends, location, occupation }) => {
+        return { _id, firstname, lastname, picturePath, friends, location, occupation }
+    })
+
     res.status(400).json({
         success: true,
         message: "success",
-        user
+        formatted
     })
 })
